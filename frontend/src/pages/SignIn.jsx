@@ -53,8 +53,8 @@ const Register = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="anti-g-card"
       >
-        <h1>ANTIGRAVITY</h1>
-        <p className="subtitle">Enter the zero-gravity network</p>
+        <h1>ZenCTech</h1>
+        <p className="subtitle">An AI Powered Platform</p>
 
         <form onSubmit={handleSubmit}>
           <div className="floating-field">
