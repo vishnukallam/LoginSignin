@@ -26,7 +26,7 @@ const Login = () => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, formData);
       localStorage.setItem('token', res.data.token);
-      toast.success('Access Granted. Welcome to AntiGravity.');
+      toast.success('Access Granted. Welcome to ZenCTech.');
       navigate('/');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Unauthorized entry (Login failed)');

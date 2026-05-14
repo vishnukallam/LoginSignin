@@ -62,6 +62,7 @@ const Register = () => {
 
         <p className="subtitle">An AI Powered platform</p>
 
+
         <form onSubmit={handleSubmit}>
           <div className="floating-field">
             <input
