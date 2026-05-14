@@ -5,7 +5,10 @@ import toast from 'react-hot-toast';
 import { ShieldCheck, Mail, Lock, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import logo from '../assets/logo.png';
+
 const Login = () => {
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -38,37 +41,41 @@ const Login = () => {
         <div className="nebula" style={{ top: '15%', right: '15%' }}></div>
         <div className="nebula" style={{ bottom: '15%', left: '15%', background: 'radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%)' }}></div>
       </div>
-      
+
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, rotateY: -10 }}
         animate={{ opacity: 1, scale: 1, rotateY: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="anti-g-card"
       >
-        <h1>ANTIGRAVITY</h1>
+        <div className="logo-container">
+          <img src={logo} alt="ZenCTech Logo" className="app-logo" />
+        </div>
+        <h1>ZenCTech</h1>
+
         <p className="subtitle">Secure terminal login</p>
 
         <form onSubmit={handleSubmit}>
           <div className="floating-field">
-            <input 
-              type="email" 
-              name="email" 
-              placeholder=" " 
-              required 
-              value={formData.email} 
-              onChange={handleChange} 
+            <input
+              type="email"
+              name="email"
+              placeholder=" "
+              required
+              value={formData.email}
+              onChange={handleChange}
             />
             <label><Mail size={16} inline /> Email Coordinates</label>
           </div>
 
           <div className="floating-field">
-            <input 
-              type="password" 
-              name="password" 
-              placeholder=" " 
-              required 
-              value={formData.password} 
-              onChange={handleChange} 
+            <input
+              type="password"
+              name="password"
+              placeholder=" "
+              required
+              value={formData.password}
+              onChange={handleChange}
             />
             <label><Lock size={16} inline /> Security Key</label>
           </div>
