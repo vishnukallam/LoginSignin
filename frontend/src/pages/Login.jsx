@@ -45,7 +45,7 @@ const Login = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="anti-g-card"
       >
-        <h1>ANTIGRAVITY</h1>
+        <h1>ZenCTEch</h1>
         <p className="subtitle">Secure terminal login</p>
 
         <form onSubmit={handleSubmit}>
