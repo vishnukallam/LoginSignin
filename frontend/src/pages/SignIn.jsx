@@ -2,20 +2,15 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, UserPlus } from 'lucide-react';
+import { Rocket, Mail, Lock, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const SignIn = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    age: '',
-    gender: '',
-    occupation: ''
+    confirmPassword: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -27,95 +22,88 @@ const SignIn = () => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      return toast.error('Passwords do not match');
+      return toast.error('Parity check failed (Passwords do not match)');
     }
 
     setLoading(true);
     try {
-      const { confirmPassword, ...signupData } = formData;
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, signupData);
-      toast.success('Registration successful! Please login.');
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, {
+        email: formData.email,
+        password: formData.password
+      });
+      toast.success('System Linked! Coordinates saved.');
       navigate('/login');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Registration failed');
+      toast.error(err.response?.data?.message || 'Signal lost (Registration failed)');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="bg-mesh">
-        <div className="blob" style={{ top: '10%', left: '10%' }}></div>
-        <div className="blob" style={{ bottom: '10%', right: '10%', animationDelay: '-5s' }}></div>
+    <div className="zero-g-container">
+      <div className="cosmos-bg">
+        <div className="nebula" style={{ top: '20%', left: '10%' }}></div>
+        <div className="nebula" style={{ bottom: '20%', right: '10%', background: 'radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%)' }}></div>
       </div>
       
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-        className="m3-card"
+        initial={{ opacity: 0, y: 50, rotateX: 10 }}
+        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="anti-g-card"
       >
-        <h1>Create Account</h1>
-        <p className="subtitle">Join our premium community</p>
+        <h1>ANTIGRAVITY</h1>
+        <p className="subtitle">Enter the zero-gravity network</p>
 
         <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <input type="text" name="fullName" placeholder=" " required value={formData.fullName} onChange={handleChange} />
-            <label>Full Name</label>
+          <div className="floating-field">
+            <input 
+              type="email" 
+              name="email" 
+              placeholder=" " 
+              required 
+              value={formData.email} 
+              onChange={handleChange} 
+            />
+            <label><Mail size={16} inline /> Email Coordinates</label>
           </div>
 
-          <div className="input-group">
-            <input type="email" name="email" placeholder=" " required value={formData.email} onChange={handleChange} />
-            <label>Email ID</label>
+          <div className="floating-field">
+            <input 
+              type="password" 
+              name="password" 
+              placeholder=" " 
+              required 
+              value={formData.password} 
+              onChange={handleChange} 
+            />
+            <label><Lock size={16} inline /> Security Key</label>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div className="input-group">
-              <input type="number" name="age" placeholder=" " required value={formData.age} onChange={handleChange} />
-              <label>Age</label>
-            </div>
-            <div className="input-group">
-              <select name="gender" required value={formData.gender} onChange={handleChange}>
-                <option value="" disabled hidden></option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-              <label>Gender</label>
-            </div>
+          <div className="floating-field">
+            <input 
+              type="password" 
+              name="confirmPassword" 
+              placeholder=" " 
+              required 
+              value={formData.confirmPassword} 
+              onChange={handleChange} 
+            />
+            <label><Lock size={16} inline /> Confirm Key</label>
           </div>
 
-          <div className="input-group">
-            <input type="text" name="occupation" placeholder=" " required value={formData.occupation} onChange={handleChange} />
-            <label>Occupation</label>
-          </div>
-
-          <div className="input-group">
-            <input type={showPassword ? "text" : "password"} name="password" placeholder=" " required value={formData.password} onChange={handleChange} />
-            <label>Password</label>
-            <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-
-          <div className="input-group">
-            <input type={showPassword ? "text" : "password"} name="confirmPassword" placeholder=" " required value={formData.confirmPassword} onChange={handleChange} />
-            <label>Confirm Password</label>
-          </div>
-
-          <button type="submit" className="btn-m3" disabled={loading}>
-            {loading ? <div className="spinner"></div> : <><UserPlus size={20} /> Sign Up</>}
+          <button type="submit" className="btn-launch" disabled={loading}>
+            {loading ? <div className="spinner"></div> : <><Rocket size={20} /> Launch Sequence</>}
           </button>
         </form>
 
         <p className="link-text">
-          Already have an account? <Link to="/login">Login</Link>
+          Already linked? <Link to="/login">Initialize Login</Link>
         </p>
       </motion.div>
-    </>
+    </div>
   );
 };
 
-export default SignIn;
+export default Register;

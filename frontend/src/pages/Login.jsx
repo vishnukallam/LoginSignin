@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, LogIn } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
@@ -10,7 +10,6 @@ const Login = () => {
     email: '',
     password: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -21,79 +20,70 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, formData);
-      toast.success('Login Successful!');
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      // In a real app, you'd navigate to a dashboard
-      console.log('Login success:', response.data);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, formData);
+      localStorage.setItem('token', res.data.token);
+      toast.success('Access Granted. Welcome to AntiGravity.');
+      navigate('/');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
+      toast.error(err.response?.data?.message || 'Unauthorized entry (Login failed)');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="bg-mesh">
-        <div className="blob" style={{ top: '20%', right: '20%' }}></div>
-        <div className="blob" style={{ bottom: '20%', left: '20%', animationDelay: '-8s' }}></div>
+    <div className="zero-g-container">
+      <div className="cosmos-bg">
+        <div className="nebula" style={{ top: '15%', right: '15%' }}></div>
+        <div className="nebula" style={{ bottom: '15%', left: '15%', background: 'radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%)' }}></div>
       </div>
-
+      
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-        className="m3-card"
+        initial={{ opacity: 0, scale: 0.9, rotateY: -10 }}
+        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="anti-g-card"
       >
-        <h1>Welcome Back</h1>
-        <p className="subtitle">Login to your account</p>
-        
+        <h1>ANTIGRAVITY</h1>
+        <p className="subtitle">Secure terminal login</p>
+
         <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <input
-              type="email"
-              name="email"
-              placeholder=" "
-              required
-              value={formData.email}
-              onChange={handleChange}
+          <div className="floating-field">
+            <input 
+              type="email" 
+              name="email" 
+              placeholder=" " 
+              required 
+              value={formData.email} 
+              onChange={handleChange} 
             />
-            <label>Email ID</label>
+            <label><Mail size={16} inline /> Email Coordinates</label>
           </div>
 
-          <div className="input-group">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder=" "
-              required
-              value={formData.password}
-              onChange={handleChange}
+          <div className="floating-field">
+            <input 
+              type="password" 
+              name="password" 
+              placeholder=" " 
+              required 
+              value={formData.password} 
+              onChange={handleChange} 
             />
-            <label>Password</label>
-            <button 
-              type="button" 
-              className="password-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            <label><Lock size={16} inline /> Security Key</label>
           </div>
 
-          <button type="submit" className="btn-m3" disabled={loading}>
-            {loading ? <div className="spinner"></div> : <><LogIn size={20} /> Login</>}
+          <button type="submit" className="btn-launch" disabled={loading}>
+            {loading ? <div className="spinner"></div> : <><ShieldCheck size={20} /> Authorize Entry</>}
           </button>
         </form>
 
         <p className="link-text">
-          Don't have an account? <Link to="/signin">Sign In</Link>
+          New Explorer? <Link to="/register">Register Identity</Link>
         </p>
+
       </motion.div>
-    </>
+    </div>
   );
 };
 

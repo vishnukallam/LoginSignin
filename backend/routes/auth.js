@@ -4,40 +4,38 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 const router = express.Router();
 
-// Signup Route
-router.post('/signup', async (req, res) => {
+// Register Route
+router.post('/register', async (req, res) => {
   try {
-    const { fullName, email, password, age, gender, occupation } = req.body;
+    const { email, password } = req.body;
 
-    // Validation
-    if (!fullName || !email || !password || !age || !gender || !occupation) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    if (isNaN(age) || age < 1 || age > 120) {
-      return res.status(400).json({ message: 'Invalid age' });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
     }
 
     // Check if user exists
     const userExists = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userExists.rows.length > 0) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Email already registered' });
     }
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const passwordHash = await bcrypt.hash(password, salt);
 
     // Insert user
     const newUser = await db.query(
-      'INSERT INTO users (full_name, email, password, age, gender, occupation) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-      [fullName, email, hashedPassword, age, gender, occupation]
+      'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id',
+      [email, passwordHash]
     );
 
-    res.status(201).json({ message: 'User registered successfully', userId: newUser.rows[0].id });
+    res.status(201).json({ 
+      message: 'Registration successful', 
+      userId: newUser.rows[0].id 
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Registration Error:', err);
+    res.status(500).json({ message: 'Zero-gravity failure (Server error)' });
   }
 });
 
@@ -53,15 +51,15 @@ router.post('/login', async (req, res) => {
     // Find user
     const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if (result.rows.length === 0) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid coordinates (Invalid credentials)' });
     }
 
     const user = result.rows[0];
 
     // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid coordinates (Invalid credentials)' });
     }
 
     // Generate JWT
@@ -75,14 +73,12 @@ router.post('/login', async (req, res) => {
       token,
       user: {
         id: user.id,
-        fullName: user.full_name,
-        email: user.email,
-        occupation: user.occupation
+        email: user.email
       }
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login Error:', err);
+    res.status(500).json({ message: 'Zero-gravity failure (Server error)' });
   }
 });
 

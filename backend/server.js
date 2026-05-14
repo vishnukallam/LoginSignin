@@ -7,11 +7,16 @@ const authRoutes = require('./routes/auth');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes); // Resulting in /api/register and /api/login
+
 
 // Root route
 app.get('/', (req, res) => {
